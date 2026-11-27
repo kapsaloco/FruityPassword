@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fruity Password</title>
+  <link rel="icon" type="image/png" href="/src-tauri/icons/32x32.png?no-inline">
+  <link rel="stylesheet" href="/src/styles/fruity/v1.1.2/index.css">
+  <link rel="stylesheet" href="/src/styles.css">
+  <script type="module" src="/src/main.ts"></script>
+</head>
+<body class="fr-window password-window">
+  <div class="password-scenery" aria-hidden="true"></div>
+  <header class="fr-titlebar fr-titlebar--glass">
+    <div class="fr-titlebar__drag" id="window-drag">
+      <img src="/src-tauri/icons/32x32.png?no-inline" width="18" height="18" alt="">
+      <h1 class="fr-titlebar__title">Fruity Password</h1>
+    </div>
+    <div class="fr-titlebar__controls" id="window-controls" hidden>
+      <button class="fr-caption" id="minimize" type="button" aria-label="Minimize"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h10"/></svg></button>
+      <button class="fr-caption fr-caption--close" id="close" type="button" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="m2 2 8 8m0-8-8 8"/></svg></button>
+    </div>
+  </header>
+
+  <div class="password-scroll fr-glass-scrollbar" role="region" aria-label="Generator workspace" tabindex="0">
+    <main class="password-workspace">
+      <section class="fr-panel fr-panel--glass password-panel fr-tabs" aria-label="Credential generator" data-fr-tabs>
+        <div class="fr-tabs__list fr-tabs__list--glass-pill password-modes" id="modes" role="tablist" aria-label="Credential type">
+          <button class="fr-tab" id="password-tab" type="button" role="tab" aria-selected="true" aria-controls="password-options">Password</button>
+          <button class="fr-tab" id="passphrase-tab" type="button" role="tab" aria-selected="false" aria-controls="passphrase-options" tabindex="-1">Passphrase</button>
+        </div>
+
+        <div class="fr-field">
+          <label class="fr-label" id="credential-label" for="credential">Generated password</label>
+          <textarea class="fr-input fr-mono fr-glass-scrollbar password-output" id="credential" rows="2" readonly autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+        </div>
+        <div class="password-actions">
+          <button class="fr-button fr-button--primary fr-button--hero" id="generate" type="button" aria-keyshortcuts="Control+Enter Meta+Enter">Generate</button>
+          <button class="fr-button" id="visibility" type="button" aria-controls="credential" disabled>Hide</button>
+          <button class="fr-button" id="copy" type="button" disabled>Copy</button>
+          <button class="fr-button fr-button--danger-hover" id="clear" type="button" aria-controls="credential" disabled>Clear</button>
+        </div>
+        <div class="password-feedback">
+          <p class="fr-help" id="randomness" hidden></p>
+          <p class="fr-field-error" id="error" role="alert" hidden></p>
+          <p class="fr-status-strip" id="status" role="status"></p>
+        </div>
+
+        <div class="fr-field-divider"></div>
+        <div class="fr-tabs__panel password-options password-settings" id="password-options" role="tabpanel" aria-labelledby="password-tab">
+          <label class="fr-field password-number">
+            <span class="fr-label">Length (8–128)</span>
+            <input class="fr-input" id="length" aria-describedby="error" type="number" min="8" max="128" step="1" value="20" required>
+          </label>
+          <fieldset class="fr-fieldset" aria-describedby="error">
+            <legend class="fr-legend">Character classes</legend>
+            <div class="password-classes">
+              <label class="fr-choice fr-choice--chip"><input id="uppercase" type="checkbox" checked> Uppercase</label>
+              <label class="fr-choice fr-choice--chip"><input id="lowercase" type="checkbox" checked> Lowercase</label>
+              <label class="fr-choice fr-choice--chip"><input id="numbers" type="checkbox" checked> Numbers</label>
+              <label class="fr-choice fr-choice--chip"><input id="symbols" type="checkbox" checked> Symbols</label>
+              <label class="fr-choice fr-choice--chip"><input id="exclude-ambiguous" type="checkbox"> Exclude ambiguous characters</label>
+            </div>
+          </fieldset>
+        </div>
+        <div class="fr-tabs__panel password-options password-settings" id="passphrase-options" role="tabpanel" aria-labelledby="passphrase-tab" hidden>
+          <label class="fr-field password-number">
+            <span class="fr-label">Word count (4–10)</span>
+            <input class="fr-input" id="word-count" aria-describedby="error" type="number" min="4" max="10" step="1" value="6" required>
+          </label>
+          <fieldset class="fr-fieldset">
+            <legend class="fr-legend">Separator</legend>
+            <div class="fr-segments fr-segments--green-glass">
+              <label class="fr-segment"><input id="hyphen" type="radio" name="separator" checked><span>Hyphen</span></label>
+              <label class="fr-segment"><input id="space" type="radio" name="separator"><span>Space</span></label>
+            </div>
+          </fieldset>
+        </div>
+      </section>
+
+      <footer class="fr-footer">
+        <span class="fr-footer__status"><span class="fr-statusbar__light" aria-hidden="true"></span>FruityUI <span id="footer-version"></span></span>
+        <button class="fr-help-button" type="button" data-fr-open-dialog="about"><span aria-hidden="true">?</span> Help &amp; About</button>
+      </footer>
+    </main>
+  </div>
+
+  <dialog class="fr-dialog fr-dialog--help fr-dialog--scroll-body password-about" id="about" aria-labelledby="about-title">
+    <header class="fr-dialog__header fr-about-header">
+      <img src="/src-tauri/icons/128x128.png?no-inline" width="60" height="60" alt="">
+      <div><h2 class="fr-subheading" id="about-title">Fruity Password</h2><p class="fr-help">Generate passwords and passphrases.</p></div>
+    </header>
+    <div class="fr-dialog__body fr-glass-scrollbar" tabindex="0" role="region" aria-label="Help and credits">
+      <p><strong>Works entirely offline.</strong> Fruity Password generates credentials on this device and sends zero data to any server.</p>
+      <h3 class="fr-subheading">How to use</h3>
+      <ol class="password-help-steps">
+        <li>Choose Password or Passphrase and adjust the generation options.</li>
+        <li>Select Generate. To customize a password, edit it directly while it’s visible.</li>
+        <li>Select Copy to put the result on the clipboard, or Clear to remove it from the current tab.</li>
+      </ol>
+      <p class="fr-help">Each tab keeps its latest result in memory while the app is open. Clipboard history, synchronization, and other applications may retain anything you copy.</p>
+      <dl class="fr-shortcuts password-shortcuts" aria-label="Keyboard shortcuts">
+        <div><dt>Generate on Windows</dt><dd><kbd class="fr-key">Ctrl</kbd><span>+</span><kbd class="fr-key">Enter</kbd></dd></div>
+        <div><dt>Generate on macOS</dt><dd><kbd class="fr-key" aria-label="Command">⌘</kbd><span>+</span><kbd class="fr-key">Enter</kbd></dd></div>
+        <div><dt>Close Help &amp; About</dt><dd><kbd class="fr-key">Esc</kbd></dd></div>
+      </dl>
+      <p class="fr-help">Created by George Kapsalakos.<br>Fruity Password <span id="app-version"></span> · Part of the Fruity Suite<br>FruityUI <span id="ui-version"></span> · MIT License</p>
+      <details class="fr-disclosure">
+        <summary>Estimated randomness and character sets</summary>
+        <div class="fr-disclosure__body password-options">
+          <p>Estimated randomness describes how many equally likely results your settings allow. One bit means two possibilities, like the two sides of a fair coin. Each additional bit doubles the number of possibilities, so 10 bits means 1,024 possible results.</p>
+          <p>For generated passwords, the estimate counts results that include every selected character class. Editing a password clears its estimate. For passphrases, it uses the chosen word count and the size of the bundled word list. Guessing time also depends on how and where the credential is used.</p>
+          <p>Symbols use the 32 printable ASCII punctuation characters. Excluding ambiguous characters removes <span class="fr-mono" id="ambiguous-characters"></span>.</p>
+          <p>A few words on the list contain a hyphen. Each counts as one word.</p>
+        </div>
+      </details>
+      <details class="fr-disclosure">
+        <summary>Licenses and notices</summary>
+        <div class="fr-disclosure__body password-options">
+          <h3 class="fr-subheading">FruityUI</h3>
+          <pre class="fr-mono password-license" id="ui-license"></pre>
+          <h3 class="fr-subheading">EFF Long Wordlist</h3>
+          <p>The Electronic Frontier Foundation provides the bundled list under the Creative Commons Attribution 4.0 International license.</p>
+          <p class="fr-help fr-mono">www.eff.org/dice<br>creativecommons.org/licenses/by/4.0/</p>
+        </div>
+      </details>
+    </div>
+    <form method="dialog" class="fr-dialog__actions"><button class="fr-button fr-button--primary" type="submit" autofocus>Done</button></form>
+  </dialog>
+</body>
+</html>

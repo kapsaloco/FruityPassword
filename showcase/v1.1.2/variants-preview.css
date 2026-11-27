@@ -1,0 +1,9 @@
+@layer app {
+  .preview-tab-variants {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--fr-space-4);
+  }
+
+  .preview-separator { max-inline-size: 20rem; }
+}
